@@ -1,6 +1,8 @@
 import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+
+// Importing query functions from database.js
 import {
   getTasks,
   createTask,
@@ -10,10 +12,14 @@ import {
   getUsers,
   updateUser
 } from "./database.js";
+
+// Importing authorization middleware
 import { authenticateToken } from "./authMiddleware.js";
 
 const userRouter = express.Router();
 
+
+// API for user registration
 userRouter.post("/login", authenticateToken, async (req, res) => {
   const { name, password } = req.body;
   const users = await getUsers();
@@ -39,6 +45,9 @@ userRouter.post("/login", authenticateToken, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+
+// API for fetching all tasks of an user
 userRouter.get("/tasks", authenticateToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -50,6 +59,8 @@ userRouter.get("/tasks", authenticateToken, async (req, res) => {
   }
 });
 
+
+// API for creating a task
 userRouter.post("/create", authenticateToken, async (req, res) => {
   const { title, status } = req.body;
   const userId = req.user.id;
@@ -62,6 +73,8 @@ userRouter.post("/create", authenticateToken, async (req, res) => {
   }
 });
 
+
+// API for updating a task
 userRouter.put("/update/:id", authenticateToken, async (req, res) => {
   const { title, status } = req.body;
   const taskId = req.params.id;
@@ -77,6 +90,9 @@ userRouter.put("/update/:id", authenticateToken, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+
+// API for updating user profile
 userRouter.put("/update/profile", authenticateToken, async (req, res) => {
     const {name, password } = req.body;
     const id = req.user.id; 
@@ -93,6 +109,9 @@ userRouter.put("/update/profile", authenticateToken, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+
+// API for deleting a task
 userRouter.delete("/delete/:id", authenticateToken, async (req, res) => {
   const taskId = req.params.id;
   const taskInfo = await getTask(taskId);
@@ -109,4 +128,4 @@ userRouter.delete("/delete/:id", authenticateToken, async (req, res) => {
   }
 });
 
-export default userRouter;
+export default userRouter; // Exporting userRouter to use in server.js

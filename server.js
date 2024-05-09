@@ -11,6 +11,8 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
+
+// API for user registration
 app.post("/register", async (req, res) => {
   var hashedPassword = await bcrypt.hashSync(req.body.password, 10);
   const { name } = req.body;
@@ -30,6 +32,8 @@ app.post("/register", async (req, res) => {
   }
 });
 
+
+// API for login functionality
 app.get("/profile", authenticateToken, async (req, res) => {
   try {
     const users = await getUsers();
@@ -44,8 +48,13 @@ app.get("/profile", authenticateToken, async (req, res) => {
   }
 });
 
-app.use("/", userRouter);
+
+// Mounting routers to base path
+app.use("/", userRouter); 
 app.use("/", adminRouter);
+
+
+// Creation of server at port 4000
 app.listen(4000, () => {
   console.log("Server is running at port 4000");
 });

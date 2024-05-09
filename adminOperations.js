@@ -1,5 +1,6 @@
 import express from "express";
 
+// Importing necessary query functions from database.js
 import {
   getAllTasks,
   updateTask,
@@ -11,6 +12,8 @@ import { authenticateToken } from "./authMiddleware.js";
 
 const adminRouter = express.Router();
 
+
+// API for fetching all tasks of all users
 adminRouter.get("/admin/tasks", authenticateToken, async (req, res) => {
     if (req.user.role !== "admin") {
       return res.status(403).send("Forbidden");
@@ -23,6 +26,9 @@ adminRouter.get("/admin/tasks", authenticateToken, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+
+// API for fetching all users information
 adminRouter.get("/admin/users", authenticateToken, async (req, res) => {
     if (req.user.role !== "admin") {
       return res.status(403).send("Forbidden");
@@ -35,6 +41,9 @@ adminRouter.get("/admin/users", authenticateToken, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+
+// API for updating a task by id
 adminRouter.put("/admin/update/:id", authenticateToken, async (req, res) => {
     if (req.user.role !== "admin") {
       return res.status(403).send("Forbidden");
@@ -49,6 +58,9 @@ adminRouter.put("/admin/update/:id", authenticateToken, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+
+// API for deleting a user by id
 adminRouter.delete("/delete/user/:id", authenticateToken, async (req, res) => {
     if (req.user.role !== "admin") {
       return res.status(403).send("Forbidden");
@@ -63,6 +75,9 @@ adminRouter.delete("/delete/user/:id", authenticateToken, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+
+// API for deleting a task by id
 adminRouter.delete("/delete/task/:id", authenticateToken, async (req, res) => {
     if (req.user.role !== "admin") {
       return res.status(403).send("Forbidden");
@@ -77,4 +92,4 @@ adminRouter.delete("/delete/task/:id", authenticateToken, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-export default adminRouter;
+export default adminRouter; // exporting adminRouter to use in server.js

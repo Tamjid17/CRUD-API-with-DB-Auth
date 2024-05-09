@@ -1,6 +1,8 @@
 import mysql from 'mysql2'
 import dotenv from 'dotenv'
 dotenv.config()
+
+// MYSQL DBMS connection pool
 const pool = mysql.createPool({
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
@@ -8,18 +10,30 @@ const pool = mysql.createPool({
     port: process.env.MYSQL_PORT,
     database: process.env.MYSQL_DATABASE
 }).promise();
+
+
+// Query function for getting all tasks of an user
 export async function getTasks(id) {
     const [rows] = await pool.query('SELECT id, title, status FROM tasks WHERE user_id = ?', [id]);
     return rows;
 }
+
+
+// Query function for getting all tasks in the database
 export async function getAllTasks() {
     const [rows] = await pool.query('SELECT * FROM tasks');
     return rows;
 }
+
+
+// Query function for getting a task by id
 export async function getTask(id) {
     const [rows] = await pool.query('SELECT * FROM tasks WHERE id = ?', [id]);
     return rows[0];
 }
+
+
+// Query function for updating a task by id
 export async function updateTask(id, title, status) {
     if (!title && !status) {
       throw new Error("Either title or status must be provided for update");
@@ -48,15 +62,23 @@ export async function updateTask(id, title, status) {
        throw new Error("Error updating task");
      }
 }
+
+
+// Query function for creating a task
 export async function createTask(userID, title, status) {
     const [result] = await pool.query('INSERT INTO tasks (user_id, title, status) VALUES(?, ?, ?)', [userID, title, status]);
     return getTask(result.insertId);
 }
+
+
+// Query function for getting all users
 export async function getUsers() {
     const [rows] = await pool.query('SELECT * FROM users');
     return rows;
 }
 
+
+// Query function for creating a user
 export async function createUser(username, password) {
   try {
     const [result] = await pool.query(
@@ -69,6 +91,9 @@ export async function createUser(username, password) {
     throw error;
   }
 }
+
+
+// Query function for deleting a task by id
 export async function deleteTask(id) {
   try {
     await pool.query("DELETE FROM tasks WHERE id = ?", [id]);
@@ -77,6 +102,9 @@ export async function deleteTask(id) {
     throw error;
   }
 }
+
+
+// Query function for deleting a user by id
 export async function deleteUser(id) {
   try {
     await pool.query("DELETE FROM users WHERE id = ?", [id]);
@@ -85,6 +113,9 @@ export async function deleteUser(id) {
     throw error;
   }
 }
+
+
+// Query function for updating a user profile by id
 export async function updateUser(name, password, id) {
   try {
     await pool.query("UPDATE users SET name = ?, password = ? WHERE id = ?", [name, password, id]);
