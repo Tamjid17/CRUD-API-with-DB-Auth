@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import userRouter from "./userOperations.js";
+import adminRouter from "./adminOperations.js";
 import { createUser, getUsers } from "./database.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
@@ -16,7 +17,7 @@ app.post("/register", async (req, res) => {
   const user = { name: name };
 
   if (!name || !hashedPassword) {
-    return res.status(400).send("Name, password, and role are required.");
+    return res.status(400).send("Name and password are required.");
   }
   try {
     await createUser(name, hashedPassword);
@@ -44,7 +45,7 @@ app.get("/profile", authenticateToken, async (req, res) => {
 });
 
 app.use("/", userRouter);
-
+app.use("/", adminRouter);
 app.listen(4000, () => {
   console.log("Server is running at port 4000");
 });

@@ -12,6 +12,10 @@ export async function getTasks(id) {
     const [rows] = await pool.query('SELECT id, title, status FROM tasks WHERE user_id = ?', [id]);
     return rows;
 }
+export async function getAllTasks() {
+    const [rows] = await pool.query('SELECT * FROM tasks');
+    return rows;
+}
 export async function getTask(id) {
     const [rows] = await pool.query('SELECT * FROM tasks WHERE id = ?', [id]);
     return rows[0];
