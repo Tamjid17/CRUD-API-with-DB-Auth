@@ -79,11 +79,11 @@ export async function getUsers() {
 
 
 // Query function for creating a user
-export async function createUser(username, password) {
+export async function createUser(username, password, email) {
   try {
     const [result] = await pool.query(
-      "INSERT INTO users (name, password) VALUES(?, ?)",
-      [username, password]
+      "INSERT INTO users (name, password, email) VALUES(?, ?, ?)",
+      [username, password, email]
     );
     console.log("User created successfully");
   } catch (error) {
@@ -116,9 +116,9 @@ export async function deleteUser(id) {
 
 
 // Query function for updating a user profile by id
-export async function updateUser(name, password, id) {
+export async function updateUser(name, password, email, id) {
   try {
-    await pool.query("UPDATE users SET name = ?, password = ? WHERE id = ?", [name, password, id]);
+    await pool.query("UPDATE users SET name = ?, password = ?, email = ? WHERE id = ?", [name, password, email, id]);
   } catch (error) {
     console.error("Error updating user:", error);
     throw error;

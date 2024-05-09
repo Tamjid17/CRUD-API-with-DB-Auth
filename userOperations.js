@@ -94,7 +94,7 @@ userRouter.put("/update/:id", authenticateToken, async (req, res) => {
 
 // API for updating user profile
 userRouter.put("/update/profile", authenticateToken, async (req, res) => {
-    const {name, password } = req.body;
+    const {name, password, email } = req.body;
     const id = req.user.id; 
   try {
     const users = await getUsers();
@@ -103,7 +103,7 @@ userRouter.put("/update/profile", authenticateToken, async (req, res) => {
       return res.status(404).send("User not found");
     }
     const hashedPassword = await bcrypt.hashSync(password, 10);
-    await updateUser(name, hashedPassword, id);
+    await updateUser(name, hashedPassword, email, id);
   } catch (error) {
     console.error("Error fetching user profile:", error);
     res.status(500).send("Internal Server Error");

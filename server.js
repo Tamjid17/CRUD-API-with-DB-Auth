@@ -15,14 +15,12 @@ app.use(express.json());
 // API for user registration
 app.post("/register", async (req, res) => {
   var hashedPassword = await bcrypt.hashSync(req.body.password, 10);
-  const { name } = req.body;
-  const user = { name: name };
-
-  if (!name || !hashedPassword) {
-    return res.status(400).send("Name and password are required.");
+  const { name, email } = req.body;
+  if (!name || !hashedPassword || !email) {
+    return res.status(400).send("Name, email and password are required.");
   }
   try {
-    await createUser(name, hashedPassword);
+    await createUser(name, hashedPassword, email);
     const accesstoken = jwt.sign({ name }, process.env.ACCESS_TOKEN_SECRET, {
       expiresIn: "1h",
     });
