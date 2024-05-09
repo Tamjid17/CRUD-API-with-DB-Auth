@@ -1,11 +1,11 @@
 import express from "express";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+
 import {
   getAllTasks,
   updateTask,
   deleteTask,
   getUsers,
+  deleteUser
 } from "./database.js";
 import { authenticateToken } from "./authMiddleware.js";
 
@@ -46,6 +46,34 @@ adminRouter.put("/admin/update/:id", authenticateToken, async (req, res) => {
     res.json(task);
   } catch (error) {
     console.error("Error updating task:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+adminRouter.delete("/delete/user/:id", authenticateToken, async (req, res) => {
+    if (req.user.role !== "admin") {
+      return res.status(403).send("Forbidden");
+    }
+  const id = req.params.id;
+  try {
+    await deleteUser(id);
+    const tasks = await getUsers();
+    res.json(tasks);
+  } catch (error) {
+    console.error("Error deleting task:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+adminRouter.delete("/delete/task/:id", authenticateToken, async (req, res) => {
+    if (req.user.role !== "admin") {
+      return res.status(403).send("Forbidden");
+    }
+  const id = req.params.id;
+  try {
+    await deleteTask(id);
+    const tasks = await getAllTasks();
+    res.json(tasks);
+  } catch (error) {
+    console.error("Error deleting task:", error);
     res.status(500).send("Internal Server Error");
   }
 });

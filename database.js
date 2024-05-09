@@ -71,11 +71,25 @@ export async function createUser(username, password) {
 }
 export async function deleteTask(id) {
   try {
-    // Execute SQL DELETE statement to remove task from database
     await pool.query("DELETE FROM tasks WHERE id = ?", [id]);
   } catch (error) {
-    // If an error occurs during the database operation, log the error and re-throw it
     console.error("Error deleting task:", error);
+    throw error;
+  }
+}
+export async function deleteUser(id) {
+  try {
+    await pool.query("DELETE FROM users WHERE id = ?", [id]);
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw error;
+  }
+}
+export async function updateUser(name, password, id) {
+  try {
+    await pool.query("UPDATE users SET name = ?, password = ? WHERE id = ?", [name, password, id]);
+  } catch (error) {
+    console.error("Error updating user:", error);
     throw error;
   }
 }

@@ -8,6 +8,7 @@ import {
   updateTask,
   deleteTask,
   getUsers,
+  updateUser
 } from "./database.js";
 import { authenticateToken } from "./authMiddleware.js";
 
@@ -76,7 +77,22 @@ userRouter.put("/update/:id", authenticateToken, async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
-
+userRouter.put("/update/profile", authenticateToken, async (req, res) => {
+    const {name, password } = req.body;
+    const id = req.user.id; 
+  try {
+    const users = await getUsers();
+    const user = users.filter((user) => user.name === req.user.name);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    const hashedPassword = await bcrypt.hashSync(password, 10);
+    await updateUser(name, hashedPassword, id);
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 userRouter.delete("/delete/:id", authenticateToken, async (req, res) => {
   const taskId = req.params.id;
   const taskInfo = await getTask(taskId);
