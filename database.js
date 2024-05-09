@@ -83,13 +83,15 @@ export async function createUser(username, password, email) {
   try {
     const [result] = await pool.query(
       "INSERT INTO users (name, password, email) VALUES(?, ?, ?)",
-      [username, password, email]
+      [username, password, email]   
     );
     console.log("User created successfully");
+    return result;
   } catch (error) {
     console.error("Error creating user:", error);
     throw error;
   }
+  
 }
 
 
